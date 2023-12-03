@@ -1,0 +1,7 @@
+Flag keyword :
+
+- n Go, the flag package provides a convenient way to define and parse command-line arguments. The flag.String function is used to declare a string command-line flag. It takes three arguments: the name of the flag, the default value, and a short description.
+- The flag package simplifies the process of handling command-line arguments and allows developers to focus on the core functionality of their programs.
+- In this case, we have used the flag package to give users more authority to configure the listen adrress after building the whole project and they can do it via this command line
+ "make build"
+ " ./bin/api --listenAddr : 5000 "
