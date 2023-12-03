@@ -13,7 +13,7 @@
 Documentation
 
 ```
-https://mongodb.com/docs/driver/go/current/quick-start
+https://www.mongodb.com/docs/drivers/go/current/quick-start/#std-label-golang-quickstart
 ```
 
 Installing MongoDB client
@@ -37,3 +37,7 @@ go get github.com/gofiber/fiber/v2
 
 ## Docker
 ### Installing mongo DB as docker container
+
+```
+docker run --name mongob -d mongo:latest -p 27017:27017
+```
