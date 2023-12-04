@@ -1,9 +1,15 @@
 package api
 
 import (
+	"errors"
+
+
 	"github.com/adarsh-jaiss/GO-Hotel-reservation/db"
 	"github.com/adarsh-jaiss/GO-Hotel-reservation/types"
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Userhandler struct{
@@ -24,6 +30,9 @@ func (h *Userhandler) HandlerUser(c *fiber.Ctx) error {
 	// So we can normally access the ID of a user via this logic and store it in a user variable
 	userID, err := h.userstore.GetUserByID(c.Context(),id)
 	if err!= nil{
+		if errors.Is(err,mongo.ErrNoDocuments){
+			return c.JSON(map[string]string{"msg":"user not found"})
+		}
 		return err
 	}
 
@@ -48,8 +57,8 @@ func (h *Userhandler) HandlePostUser(c *fiber.Ctx) error {
 		return err
 	}
 
-	if errors:= params.ValidiateUsers(); len(errors) > 0{
-		return c.JSON(errors)
+	if errors := params.ValidateUsers(); len(errors) > 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(errors)
 	}
 
 	user,err := types.NewUserFromParams(params)
@@ -65,4 +74,39 @@ func (h *Userhandler) HandlePostUser(c *fiber.Ctx) error {
 
 	return c.JSON(InsertedUser)
 }
+
+func (h *Userhandler) HandleDeleteUser(c *fiber.Ctx) error  {
+	userID := c.Params("id")
+	if err := h.userstore.DeleteUsers(c.Context(),userID); err!=nil{
+		return err
+	}
+	return c.JSON(map[string]string{"Deleted": userID})
+}
+
+func (h *Userhandler) HandlePutUser(c *fiber.Ctx) error {
+    var (
+        params types.UpdateUserParams
+        userID = c.Params("id")
+    )
+
+    oid, err := primitive.ObjectIDFromHex(userID)
+    if err != nil {
+        return c.Status(fiber.StatusBadRequest).JSON(map[string]string{"error": "invalid user ID"})
+    }
+
+    if err := c.BodyParser(&params); err != nil {
+        return err
+    }
+
+    // fmt.Printf("Update Params: %+v\n", params)
+
+    filter := bson.M{"_id": oid}
+    if err := h.userstore.UpdateUsers(c.Context(), filter, params); err != nil {
+        return err
+    }
+
+    return c.JSON(map[string]string{"Updated": userID})
+}
+
+
 

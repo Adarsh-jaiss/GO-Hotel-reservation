@@ -34,9 +34,11 @@ func main() {
 	
 	//  creating an api group for versioning
 	appV1 := app.Group("api/v1")
-	appV1.Get("user",userHandler.HandlerUsers)
-	appV1.Get("user/:id",userHandler.HandlerUser)
-	appV1.Post("user",userHandler.HandlePostUser)
+	appV1.Get("/user",userHandler.HandlerUsers)
+	appV1.Get("/user/:id",userHandler.HandlerUser)
+	appV1.Post("/user",userHandler.HandlePostUser)
+	appV1.Delete("/user/:id",userHandler.HandleDeleteUser)
+	appV1.Put("/user/:id",userHandler.HandlePutUser)
 
 	listerAddr:= flag.String("listenAddr",":3000","This is the listen Address of the API Server")
 	app.Listen(*listerAddr)

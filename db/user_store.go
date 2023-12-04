@@ -17,6 +17,8 @@ type UserStorer interface{
 	GetUserByID(context.Context,string) (*types.User,error)
 	GetUsers(context.Context) ([]*types.User,error)
 	InsertUsers(context.Context,*types.User) (*types.User,error)
+	DeleteUsers(context.Context,string) (error)
+	UpdateUsers(ctx context.Context,filter bson.M , params types.UpdateUserParams) (error)
 }
 
 type MongoUserStore struct{
@@ -24,16 +26,6 @@ type MongoUserStore struct{
 	coll *mongo.Collection
 	
 }
-
-func (s *MongoUserStore) InsertUsers(ctx context.Context,user *types.User) (*types.User,error) {
-	res,err := s.coll.InsertOne(ctx,user)
-	if err!= nil{
-		return nil, err
-	}
-	user.ID = res.InsertedID.(primitive.ObjectID)
-	return user,err
-}
-
 func NewMongoUserStore(c *mongo.Client) *MongoUserStore {
 	return &MongoUserStore{
 		client: c,
@@ -48,7 +40,6 @@ func (s *MongoUserStore) GetUserByID(ctx context.Context,id string) (*types.User
 	if err!=nil{
 		return nil,err
 	}
-
 
 	var user types.User
 	if err := s.coll.FindOne(ctx,bson.M{"_id":oid}).Decode(&user); err!=nil{
@@ -69,4 +60,43 @@ func (s *MongoUserStore) GetUsers(ctx context.Context) ([]*types.User,error) {
 	}
 	return users,nil
 
+}
+func (s *MongoUserStore) InsertUsers(ctx context.Context,user *types.User) (*types.User,error) {
+	res,err := s.coll.InsertOne(ctx,user)
+	if err!= nil{
+		return nil, err
+	}
+	user.ID = res.InsertedID.(primitive.ObjectID)
+	return user,err
+}
+
+func (s *MongoUserStore) DeleteUsers(ctx context.Context, id string) error {
+	// validate the correctness of the ID
+	oid, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+
+	_, err = s.coll.DeleteOne(ctx, bson.M{"_id": oid})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *MongoUserStore) UpdateUsers(ctx context.Context, filter bson.M, params types.UpdateUserParams) error {
+    update := bson.D{
+        {"$set", bson.D{
+            {"firstName", params.FirstName},
+            {"lastName", params.LastName},
+        }},
+    }
+
+    _, err := s.coll.UpdateOne(ctx, filter, update)
+    if err != nil {
+        return err
+    }
+
+    return nil
 }
