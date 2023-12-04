@@ -36,6 +36,7 @@ func main() {
 	appV1 := app.Group("api/v1")
 	appV1.Get("user",userHandler.HandlerUsers)
 	appV1.Get("user/:id",userHandler.HandlerUser)
+	appV1.Post("user",userHandler.HandlePostUser)
 
 	listerAddr:= flag.String("listenAddr",":3000","This is the listen Address of the API Server")
 	app.Listen(*listerAddr)

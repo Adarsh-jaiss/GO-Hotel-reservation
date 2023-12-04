@@ -15,12 +15,23 @@ const (
 
 type UserStorer interface{
 	GetUserByID(context.Context,string) (*types.User,error)
+	GetUsers(context.Context) ([]*types.User,error)
+	InsertUsers(context.Context,*types.User) (*types.User,error)
 }
 
 type MongoUserStore struct{
 	client *mongo.Client
 	coll *mongo.Collection
 	
+}
+
+func (s *MongoUserStore) InsertUsers(ctx context.Context,user *types.User) (*types.User,error) {
+	res,err := s.coll.InsertOne(ctx,user)
+	if err!= nil{
+		return nil, err
+	}
+	user.ID = res.InsertedID.(primitive.ObjectID)
+	return user,err
 }
 
 func NewMongoUserStore(c *mongo.Client) *MongoUserStore {
@@ -45,4 +56,17 @@ func (s *MongoUserStore) GetUserByID(ctx context.Context,id string) (*types.User
 	}
 	return &user,nil
 	
+}
+
+func (s *MongoUserStore) GetUsers(ctx context.Context) ([]*types.User,error) {
+	cur,err := s.coll.Find(ctx,bson.M{})
+	if err!= nil{
+		return nil,err
+	}
+	var users []*types.User
+	if err:= cur.All(ctx,&users); err!= nil{
+		return []*types.User{},nil
+	}
+	return users,nil
+
 }
