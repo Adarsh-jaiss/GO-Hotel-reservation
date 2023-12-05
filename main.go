@@ -22,12 +22,13 @@ const (
 )
 func main() {
 	// connecting with Mongo DB
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(dburi))
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(db.DBURI))
 	if err != nil {
 		log.Fatal(err)
 	}
 	//  handlers initialization
-	userHandler := api.NewUserhandler(db.NewMongoUserStore(client,dbname))
+
+	userHandler := api.NewUserhandler(db.NewMongoUserStore(client,db.DBNAME))
 
 	
 	// Defining Routes
