@@ -16,8 +16,8 @@ import (
 )
 
 const (
-	
-	// dbname = "Hotel-reservation"
+	dburi = "mongodb+srv://adarsh_jaiss:baburaokijai@baburao.dg1eflt.mongodb.net/"
+	dbname = "Hotel-reservation"
 
 )
 func main() {
@@ -27,6 +27,7 @@ func main() {
 		log.Fatal(err)
 	}
 	//  handlers initialization
+
 	userHandler := api.NewUserhandler(db.NewMongoUserStore(client,db.DBNAME))
 
 	
