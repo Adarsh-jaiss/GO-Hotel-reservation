@@ -16,18 +16,18 @@ import (
 )
 
 const (
-	dburi = "mongodb+srv://adarsh_jaiss:baburaokijai@baburao.dg1eflt.mongodb.net/"
-	dbname = "Hotel-reservation"
+	
+	// dbname = "Hotel-reservation"
 
 )
 func main() {
 	// connecting with Mongo DB
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(dburi))
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(db.DBURI))
 	if err != nil {
 		log.Fatal(err)
 	}
 	//  handlers initialization
-	userHandler := api.NewUserhandler(db.NewMongoUserStore(client,dbname))
+	userHandler := api.NewUserhandler(db.NewMongoUserStore(client,db.DBNAME))
 
 	
 	// Defining Routes

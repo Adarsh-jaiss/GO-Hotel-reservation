@@ -5,3 +5,8 @@ Flag keyword :
 - In this case, we have used the flag package to give users more authority to configure the listen adrress after building the whole project and they can do it via this command line
  "make build"
  " ./bin/api --listenAddr : 5000 "
+
+
+ // if err := client.Database(db.DBNAME).Drop(ctx); err!=nil{
+	// 	log.Fatal(err)
+	// }
