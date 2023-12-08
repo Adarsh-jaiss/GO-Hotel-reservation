@@ -31,17 +31,17 @@ func SeedHotel(name,location string, rating int) {
 		// Type: types.DoubleRoomType,
 		// BasePrice: 99.9,
 		{
-			Type: types.DeluxeRoomType,
-			BasePrice: 100.9,
+			Size: "small",
+			Price: 99.9,
 		},
 		
 		{
-			Type: types.SeaSideRoomType,
-			BasePrice: 150.9,
+			Size: "normal",
+			Price: 150.9,
 		},
 		{
-			Type: types.DeluxeRoomType,
-			BasePrice: 250.9,
+			Size: "kingsize",
+			Price: 200.9,
 		},
 	}
 

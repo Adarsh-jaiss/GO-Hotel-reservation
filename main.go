@@ -30,10 +30,17 @@ func main() {
 
 	//  handlers initialization
 	var (
-	userHandler = api.NewUserhandler(db.NewMongoUserStore(client,db.DBNAME))
+	
 	hotelStore = db.NewMongoHotelStore(client)
 	roomStore = db.NewMongoRoomStore(client,db.DBNAME,hotelStore)
-	hotelHandler = api.NewHotelHandler(hotelStore,roomStore)
+	userStore = db.NewMongoUserStore(client)
+	store = &db.Store{
+		User: userStore,
+		Hotel: hotelStore,
+		Room: roomStore,
+	}
+	hotelHandler = api.NewHotelHandler(store)
+	userHandler = api.NewUserhandler(userStore)
 
 	// Defining Routes
 	app	= fiber.New(config)
@@ -50,7 +57,9 @@ func main() {
 	appV1.Put("/user/:id",userHandler.HandlePutUser)
 
 	// This is hotel handlers
-	appV1.Get("/hotel", hotelHandler.HandleGetHotel )
+	appV1.Get("/hotel", hotelHandler.HandleGetHotels )
+	appV1.Get("/hotel/:id/rooms", hotelHandler.HandleGetRooms )
+	appV1.Get("/hotel/:id", hotelHandler.HandleGetHotel )
 
 	listerAddr:= flag.String("listenAddr",":3000","This is the listen Address of the API Server")
 	app.Listen(*listerAddr)

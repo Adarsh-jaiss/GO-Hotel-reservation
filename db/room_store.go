@@ -11,6 +11,7 @@ import (
 
 type RoomStore interface {
 	InsertRoom(context.Context, *types.Room) (*types.Room, error)
+	GetRooms(context.Context, bson.M) ([]*types.Room, error)
 	// UpdateHotels(context.Context, bson.M, bson.M) error
 }
 
@@ -27,6 +28,24 @@ func NewMongoRoomStore(client *mongo.Client, dbname string, hotelStore *MongoHot
 		HotelStore:  hotelStore,
 	}
 }
+
+func (s *MongoRoomStore) GetRooms(ctx context.Context, filter bson.M) ([]*types.Room, error) {
+    // Exclude rooms with the placeholder hotel ID
+    filter["hotelid"] = bson.M{"$ne": "000000000000000000000000"}
+
+    res, err := s.coll.Find(ctx, filter)
+    if err != nil {
+        return nil, err
+    }
+
+    var rooms []*types.Room
+    if err := res.All(ctx, &rooms); err != nil {
+        return nil, err
+    }
+    return rooms, nil
+}
+
+
 
 func (s *MongoRoomStore) InsertRoom(ctx context.Context, room *types.Room) (*types.Room, error) {
 	res, err := s.coll.InsertOne(ctx, room)

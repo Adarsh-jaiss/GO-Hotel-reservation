@@ -7,3 +7,10 @@ const (
 
 )
 
+type Store struct{
+	User UserStorer
+	Hotel HotelStore
+	Room RoomStore
+}
+
+
