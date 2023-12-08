@@ -11,7 +11,7 @@ import (
 
 type RoomStore interface {
 	InsertRoom(context.Context, *types.Room) (*types.Room, error)
-	UpdateHotels(context.Context, bson.M, bson.M) error
+	// UpdateHotels(context.Context, bson.M, bson.M) error
 }
 
 type MongoRoomStore struct {
@@ -38,7 +38,7 @@ func (s *MongoRoomStore) InsertRoom(ctx context.Context, room *types.Room) (*typ
 	// Update the hotels with room ID
 	filter := bson.M{"_id": room.HotelID}
 	update := bson.M{"$push": bson.M{"rooms": room.ID}}
-	if err := s.HotelStore.UpdateHotel(ctx, filter, update); err != nil {
+	if err := s.HotelStore.UpdateHotels(ctx, filter, update); err != nil {
 		return nil, err
 	}
 	return room, nil

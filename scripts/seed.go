@@ -19,11 +19,12 @@ var (
 	ctx = context.Background()
 )
 
-func SeedHotel(name,location string) {
+func SeedHotel(name,location string, rating int) {
 	hotel := types.Hotel{
 		Name: name,
 		Location: location,
 		Rooms: []primitive.ObjectID{},
+		Rating: rating,
 	}
 
 	rooms := []types.Room{
@@ -70,18 +71,20 @@ func SeedHotel(name,location string) {
 
 func main()  {
 	Init()
-	SeedHotel("royal palace", "bhopal")
+	SeedHotel("royal palace", "bhopal", 4)
+	SeedHotel("neena palace", "bhopal", 3)
+	SeedHotel("radision bhopal", "bhopal", 5)
 	
 }
 
-func Init()  {
-	var err error
+func Init() {
+    var err error
 
-	client, err = mongo.Connect(context.TODO(), options.Client().ApplyURI(db.DBURI))
-	if err != nil {
-		log.Fatal(err)
-	}
-	
-	hotelStore = db.NewMongoHotelStore(client)
-	roomStore = db.NewMongoRoomStore(client, db.DBNAME, hotelStore)
+    client, err = mongo.Connect(context.TODO(), options.Client().ApplyURI(db.DBURI))
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    hotelStore = db.NewMongoHotelStore(client)
+    roomStore = db.NewMongoRoomStore(client, db.DBNAME, hotelStore)  // Add the missing argument (db.DBNAME)
 }
