@@ -2,14 +2,14 @@ package main
 
 import (
 	"context"
-	
-	"flag"
 
+	"flag"
 
 	"log"
 
 	"github.com/adarsh-jaiss/GO-Hotel-reservation/api"
 	"github.com/adarsh-jaiss/GO-Hotel-reservation/db"
+	"github.com/adarsh-jaiss/GO-Hotel-reservation/middleware"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -34,6 +34,7 @@ func main() {
 	hotelStore = db.NewMongoHotelStore(client)
 	roomStore = db.NewMongoRoomStore(client,db.DBNAME,hotelStore)
 	userStore = db.NewMongoUserStore(client)
+	
 	store = &db.Store{
 		User: userStore,
 		Hotel: hotelStore,
@@ -41,14 +42,18 @@ func main() {
 	}
 	hotelHandler = api.NewHotelHandler(store)
 	userHandler = api.NewUserhandler(userStore)
+	authHandler = api.NewAuthHandler(userStore)
 
 	// Defining Routes
 	app	= fiber.New(config)
-	//  creating an api group for versioning
-	appV1 = app.Group("api/v1")
+	auth =app.Group("api")
+	appV1 = app.Group("api/v1",middleware.JWTAuthntication)
 	)
 	
+	// Auth Handlers
+	auth.Post("/auth",authHandler.HandleAuthenticate )
 	
+	// Versioned API routes
 	// This is user handlers
 	appV1.Get("/user",userHandler.HandlerUsers)
 	appV1.Get("/user/:id",userHandler.HandlerUser)

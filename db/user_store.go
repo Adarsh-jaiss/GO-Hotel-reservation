@@ -21,6 +21,7 @@ type Dropper interface{
 
 type UserStorer interface{
 	Dropper
+	GetUserByEmail(context.Context,string) (*types.User,error)
 	GetUserByID(context.Context,string) (*types.User,error)
 	GetUsers(context.Context) ([]*types.User,error)
 	InsertUsers(context.Context,*types.User) (*types.User,error)
@@ -45,6 +46,16 @@ func NewMongoUserStore(c *mongo.Client) *MongoUserStore {
 func (s *MongoUserStore) Drop(ctx context.Context) error {
 	fmt.Println("----------------Dropping user collection -------------")
 	return s.coll.Drop(ctx)
+}
+
+func (s *MongoUserStore) GetUserByEmail(ctx context.Context,email string) (*types.User,error) {
+	
+	var user types.User
+	if err := s.coll.FindOne(ctx,bson.M{"email":email}).Decode(&user); err!=nil{
+		return nil,err
+	}
+	return &user,nil
+	
 }
 
 func (s *MongoUserStore) GetUserByID(ctx context.Context,id string) (*types.User,error) {

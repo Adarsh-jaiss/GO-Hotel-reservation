@@ -2,7 +2,7 @@ package api
 
 import (
 	"errors"
-
+	
 
 	"github.com/adarsh-jaiss/GO-Hotel-reservation/db"
 	"github.com/adarsh-jaiss/GO-Hotel-reservation/types"
