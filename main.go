@@ -47,7 +47,7 @@ func main() {
 	// Defining Routes
 	app	= fiber.New(config)
 	auth =app.Group("api")
-	appV1 = app.Group("api/v1",middleware.JWTAuthntication)
+	appV1 = app.Group("api/v1",middleware.JWTAuthentication)
 	)
 	
 	// Auth Handlers
