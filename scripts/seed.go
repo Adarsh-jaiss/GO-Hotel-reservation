@@ -21,6 +21,7 @@ var (
 )
 
 func Seeduser(fName, lName,email string)  {
+	fmt.Println("Seeding the Database........")
 	user, err := types.NewUserFromParams(types.CreateUserParams{
 		FirstName: fName,
 		LastName: lName,
@@ -37,6 +38,8 @@ func Seeduser(fName, lName,email string)  {
 	if err!= nil{
 		log.Fatal(err)
 	}
+
+	fmt.Println("Database Seeding completed :)")
 }
 
 func SeedHotel(name,location string, rating int) {
