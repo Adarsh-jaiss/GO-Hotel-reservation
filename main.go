@@ -34,11 +34,13 @@ func main() {
 	hotelStore = db.NewMongoHotelStore(client)
 	roomStore = db.NewMongoRoomStore(client,db.DBNAME,hotelStore)
 	userStore = db.NewMongoUserStore(client)
+	bookingStore  = db.NewMongoBookingStore(client)
 	
 	store = &db.Store{
 		User: userStore,
 		Hotel: hotelStore,
 		Room: roomStore,
+		Booking : bookingStore,
 	}
 	hotelHandler = api.NewHotelHandler(store)
 	roomHandler = api.NewRoomHandler(store)
@@ -67,7 +69,10 @@ func main() {
 	appV1.Get("/hotel/:id/rooms", hotelHandler.HandleGetRooms )
 	appV1.Get("/hotel/:id", hotelHandler.HandleGetHotel )
 
+	// rooms handlers
+	appV1.Get("/room",roomHandler.HandleGetRooms)
 	appV1.Post("/room/:id/book",roomHandler.HandleBookRoom )
+	
 
 	listerAddr:= flag.String("listenAddr",":3000","This is the listen Address of the API Server")
 	app.Listen(*listerAddr)

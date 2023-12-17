@@ -73,7 +73,7 @@ func ValidateTokens(tokenStr string) (jwt.MapClaims,error) {
 		}
 
 		secret := os.Getenv("JWT_SECRET")
-		fmt.Println("NEVER PRINT SECRET",secret)
+		// fmt.Println("NEVER PRINT SECRET",secret) //for debugging purposes only
 		return []byte(secret), nil
 	})
 

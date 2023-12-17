@@ -33,6 +33,9 @@ func (s *MongoRoomStore) GetRooms(ctx context.Context, filter bson.M) ([]*types.
     // Exclude rooms with the placeholder hotel ID
     filter["hotelid"] = bson.M{"$ne": "000000000000000000000000"}
 
+	
+
+
     res, err := s.coll.Find(ctx, filter)
     if err != nil {
         return nil, err
