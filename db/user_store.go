@@ -110,13 +110,7 @@ func (s *MongoUserStore) DeleteUsers(ctx context.Context, id string) error {
 }
 
 func (s *MongoUserStore) UpdateUsers(ctx context.Context, filter bson.M, params types.UpdateUserParams) error {
-    update := bson.D{
-        {"$set", bson.D{
-            {"firstName", params.FirstName},
-            {"lastName", params.LastName},
-        }},
-    }
-
+	update := bson.M{"$set":params}
     _, err := s.coll.UpdateOne(ctx, filter, update)
     if err != nil {
         return err

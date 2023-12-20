@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
+	"github.com/adarsh-jaiss/GO-Hotel-reservation/api"
 	"github.com/adarsh-jaiss/GO-Hotel-reservation/db"
 	"github.com/adarsh-jaiss/GO-Hotel-reservation/types"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -20,7 +22,21 @@ var (
 	userStore db.UserStorer
 )
 
-func Seeduser(IsAdmin bool,fName, lName,email,Password string)  {
+func SeedBooking(store *db.Store, uid, rid primitive.ObjectID, from, till time.Time) *types.Booking {
+	booking := &types.Booking{
+		UserID:   uid,
+		RoomID:   rid,
+		FromDate: from,
+		TillDate: till,
+	}
+	insertedBooking, err := store.Booking.InsertBooking(context.Background(), booking)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return insertedBooking
+}
+
+func Seeduser(IsAdmin bool,fName, lName,email,Password string)   {
 	fmt.Println("Seeding the Database........")
 	user, err := types.NewUserFromParams(types.CreateUserParams{
 		FirstName: fName,
@@ -42,6 +58,9 @@ func Seeduser(IsAdmin bool,fName, lName,email,Password string)  {
 	}
 
 	fmt.Println("Database Seeding completed :)")
+
+	// for making things easier for develoment perspective, we will be printing email and token of the user in the console
+	fmt.Printf("%s -> %s\n",user.Email,api.CreateTokenFromUser(user)) 
 }
 
 func SeedHotel(name,location string, rating int) {
@@ -84,11 +103,11 @@ func SeedHotel(name,location string, rating int) {
 
 	
 	for _, room := range rooms {
-		_ , err := roomStore.InsertRoom(ctx, &room)
+		InsertedRoom , err := roomStore.InsertRoom(ctx, &room)
 		if err != nil {
 			log.Fatal(err)
 		}
-		// fmt.Println(InsertedRoom)
+		fmt.Println(InsertedRoom.ID)
 	}
 	fmt.Println("Database Seeding completed :)")
 	

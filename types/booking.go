@@ -13,4 +13,5 @@ type Booking struct{
 	FromDate  time.Time	`json:"fromDate,omitempty" bson:"fromDate,omitempty"`
 	TillDate  time.Time	`json:"tillDate,omitempty" bson:"tillDate,omitempty"`
 	NumPersons int 		`json:"numPersons,omitempty" bson:"numPersons,omitempty"`
+	Cancelled bool		`json:"cancelled" bson:"cancelled"`
 }
