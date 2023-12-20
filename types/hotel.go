@@ -12,19 +12,19 @@ type Hotel struct{
 
 type RoomType int
 
-const (
-	_ RoomType = iota
-	SingleRoomType
-	DoubleRoomType
-	SeaSideRoomType
-	DeluxeRoomType
-)
+// const (
+// 	_ RoomType = iota
+// 	SingleRoomType
+// 	DoubleRoomType
+// 	SeaSideRoomType
+// 	DeluxeRoomType
+// )
 
 type Room struct{
 	ID primitive.ObjectID  			`json:"id,omitempty" bson:"_id,omitempty"`
-	// size ,normal , kingszie
-	Size string 					`json:"size" bson:"size"` 
+	Size string 					`json:"size" bson:"size"`   				// size ,normal , kingszie
 	Price float64 		  			`json:"price" bson:"price"`
+	Seaside bool					`json:"seaside bson:"seaside"`
 	HotelID primitive.ObjectID 		`json:"hotelID" bson:"hotelID"`
 	// IsAvailable bool 				`json:"available" bson:"-"`
 

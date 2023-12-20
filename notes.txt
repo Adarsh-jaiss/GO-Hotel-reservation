@@ -10,3 +10,5 @@ Flag keyword :
  // if err := client.Database(db.DBNAME).Drop(ctx); err!=nil{
 	// 	log.Fatal(err)
 	// }
+
+"mongodb+srv://adarsh_jaiss:baburaokijai@baburao.dg1eflt.mongodb.net/"

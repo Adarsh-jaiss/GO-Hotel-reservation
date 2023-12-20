@@ -8,130 +8,41 @@ import (
 
 	"github.com/adarsh-jaiss/GO-Hotel-reservation/api"
 	"github.com/adarsh-jaiss/GO-Hotel-reservation/db"
-	"github.com/adarsh-jaiss/GO-Hotel-reservation/types"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	seeding "github.com/adarsh-jaiss/GO-Hotel-reservation/db/Seeding"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var (
-	client *mongo.Client
-	roomStore db.RoomStore
-	hotelStore *db.MongoHotelStore
-	ctx = context.Background()
-	userStore db.UserStorer
-)
-
-func SeedBooking(store *db.Store, uid, rid primitive.ObjectID, from, till time.Time) *types.Booking {
-	booking := &types.Booking{
-		UserID:   uid,
-		RoomID:   rid,
-		FromDate: from,
-		TillDate: till,
-	}
-	insertedBooking, err := store.Booking.InsertBooking(context.Background(), booking)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return insertedBooking
-}
-
-func Seeduser(IsAdmin bool,fName, lName,email,Password string)   {
-	fmt.Println("Seeding the Database........")
-	user, err := types.NewUserFromParams(types.CreateUserParams{
-		FirstName: fName,
-		LastName: lName,
-		Email: email,
-		Password: Password,
-
-	})
-
-	if err!= nil{
-		log.Fatal(err)
-	}
-
-	user.IsAdmin = IsAdmin
-
-	_,err = userStore.InsertUsers(context.TODO(),user)
-	if err!= nil{
-		log.Fatal(err)
-	}
-
-	fmt.Println("Database Seeding completed :)")
-
-	// for making things easier for develoment perspective, we will be printing email and token of the user in the console
-	fmt.Printf("%s -> %s\n",user.Email,api.CreateTokenFromUser(user)) 
-}
-
-func SeedHotel(name,location string, rating int) {
-	hotel := types.Hotel{
-		Name: name,
-		Location: location,
-		Rooms: []primitive.ObjectID{},
-		Rating: rating,
-	}
-
-	rooms := []types.Room{
-		// Type: types.DoubleRoomType,
-		// BasePrice: 99.9,
-		{
-			Size: "small",
-			Price: 99.9,
-		},
-		
-		{
-			Size: "normal",
-			Price: 150.9,
-		},
-		{
-			Size: "kingsize",
-			Price: 200.9,
-		},
-	}
-
-	InsertedHotel,err := hotelStore.InsertHotel(ctx,  &hotel)
-	if err!= nil{
-		log.Fatal(err)
-	}
-	
-	fmt.Println("Seeding the Database........")
-	// fmt.Println(InsertedHotel)
-
-	for i := range rooms {
-		rooms[i].HotelID = InsertedHotel.ID
-	}
-
-	
-	for _, room := range rooms {
-		InsertedRoom , err := roomStore.InsertRoom(ctx, &room)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println(InsertedRoom.ID)
-	}
-	fmt.Println("Database Seeding completed :)")
-	
-}
-
 func main()  {
-	Init()
-	// SeedHotel("royal palace", "bhopal", 4)
-	// SeedHotel("neena palace", "bhopal", 3)
-	// SeedHotel("radision bhopal", "bhopal", 5)
-	Seeduser(false,"Adarsh","jaiswal","adarsh@gmail.com","supersecurepassword")
-	Seeduser(true,"Aakriti","awasthi","aakriti@gmail.com","khuljabhai")
-	
-}
-
-func Init() {
-    var err error
-
-    client, err = mongo.Connect(context.TODO(), options.Client().ApplyURI(db.DBURI))
+	fmt.Println("----------- Seeding the Database ------------")
+	var err error
+	ctx := context.Background()
+    client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(db.DBURI))
     if err != nil {
         log.Fatal(err)
     }
 
-    hotelStore = db.NewMongoHotelStore(client)
-    roomStore = db.NewMongoRoomStore(client, db.DBNAME, hotelStore)  // Add the missing argument (db.DBNAME)
-    userStore = db.NewMongoUserStore(client)  // Add the missing argument (db.DBNAME)
+	if err := client.Database(db.DBNAME).Drop(ctx); err!= nil{
+		log.Fatal(err)
+	}
+
+	store:= &db.Store{
+		User: db.NewMongoUserStore(client),
+		Booking: db.NewMongoBookingStore(client),
+		Hotel: db.NewMongoHotelStore(client),
+		Room: db.NewMongoRoomStore(client,db.DBNAME,db.NewMongoHotelStore(client)),
+	}
+
+	user := seeding.AddUser(store,"adarsh","jaiswal",false)
+	fmt.Println("Adarsh ->",api.CreateTokenFromUser(user))
+	admin := seeding.AddUser(store,"aakriti","awasthi",true)
+	fmt.Println("aakrti ->",api.CreateTokenFromUser(admin))
+	hotel := seeding.AddHotel(store,"royal palace","bhopal",4,nil)
+	fmt.Println(hotel)
+	room := seeding.AddRooms(store,"medium",true,88.4,hotel.ID)
+	fmt.Println(room)
+	booking := seeding.AddBooking(store,user.ID,room.ID,time.Now(),time.Now().AddDate(0,0,2))
+	fmt.Println("booking ->", booking.ID)	
+	fmt.Println("----------Database seeding completed-------")
 }
+

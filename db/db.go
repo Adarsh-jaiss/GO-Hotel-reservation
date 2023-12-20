@@ -3,7 +3,7 @@ package db
 const (
 	DBNAME = "Hotel-reservation"
 	TestDBNAME = "Hotel-reservation-test"
-	DBURI = "mongodb+srv://adarsh_jaiss:baburaokijai@baburao.dg1eflt.mongodb.net/"
+	DBURI = "mongodb://172.17.0.2:27017/"
 
 )
 
