@@ -11,4 +11,3 @@ Flag keyword :
 	// 	log.Fatal(err)
 	// }
 
-"mongodb+srv://adarsh_jaiss:baburaokijai@baburao.dg1eflt.mongodb.net/"
