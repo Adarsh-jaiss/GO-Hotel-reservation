@@ -20,19 +20,21 @@ var (
 	userStore db.UserStorer
 )
 
-func Seeduser(fName, lName,email string)  {
+func Seeduser(IsAdmin bool,fName, lName,email,Password string)  {
 	fmt.Println("Seeding the Database........")
 	user, err := types.NewUserFromParams(types.CreateUserParams{
 		FirstName: fName,
 		LastName: lName,
 		Email: email,
-		Password: "supersecurepassword",
+		Password: Password,
 
 	})
 
 	if err!= nil{
 		log.Fatal(err)
 	}
+
+	user.IsAdmin = IsAdmin
 
 	_,err = userStore.InsertUsers(context.TODO(),user)
 	if err!= nil{
@@ -97,7 +99,8 @@ func main()  {
 	// SeedHotel("royal palace", "bhopal", 4)
 	// SeedHotel("neena palace", "bhopal", 3)
 	// SeedHotel("radision bhopal", "bhopal", 5)
-	Seeduser("Adarsh","jaiswal","adarsh@gmail.com")
+	Seeduser(false,"Adarsh","jaiswal","adarsh@gmail.com","supersecurepassword")
+	Seeduser(true,"Aakriti","awasthi","aakriti@gmail.com","khuljabhai")
 	
 }
 

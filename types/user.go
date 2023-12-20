@@ -16,12 +16,13 @@ const(
 	MinPasswordLength = 7
 )
 
-type User struct{
-	ID primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
-	FirstName string `json:"firstName" bson:"firstName"`
-	LastName string `json:"lastName" bson:"lastName"`
-	Email string `json:"email" bson:"email"`
-	EncryptedPassword string `json:"-" bson:"EncryptedPassword"`
+type User struct{	
+	ID primitive.ObjectID 		`json:"id,omitempty" bson:"_id,omitempty"`
+	FirstName string 			`json:"firstName" bson:"firstName"`
+	LastName string 			`json:"lastName" bson:"lastName"`
+	Email string 				`json:"email" bson:"email"`
+	EncryptedPassword string 	`json:"-" bson:"EncryptedPassword"`
+	IsAdmin bool 				`json:"isAdmin" bson:"isAdmin"`
 
 }
 

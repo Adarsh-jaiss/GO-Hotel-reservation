@@ -46,12 +46,16 @@ func main() {
 	roomHandler = api.NewRoomHandler(store)
 	userHandler = api.NewUserhandler(userStore)
 	authHandler = api.NewAuthHandler(userStore)
+	BookingHandler = api.NewBookingHandler(store)
 
-	// Defining Routes
+	// Routes Grouping
 	app	= fiber.New(config)
 	auth =app.Group("api")
 	appV1 = app.Group("api/v1",middleware.JWTAuthentication(userStore))
-	)
+	admin = appV1.Group("/admin",middleware.AdminAuth)
+
+)
+	
 	
 	// Auth Handlers
 	auth.Post("/auth",authHandler.HandleAuthenticate )
@@ -72,6 +76,14 @@ func main() {
 	// rooms handlers
 	appV1.Get("/room",roomHandler.HandleGetRooms)
 	appV1.Post("/room/:id/book",roomHandler.HandleBookRoom )
+
+	// Todo : cancel a booking
+
+	// booking Handlers
+	appV1.Get("/booking/:id",BookingHandler.HandleGetBooking)
+
+	// admin handlers
+	admin.Get("/booking",BookingHandler.HandleGetBookings)
 	
 
 	listerAddr:= flag.String("listenAddr",":3000","This is the listen Address of the API Server")
