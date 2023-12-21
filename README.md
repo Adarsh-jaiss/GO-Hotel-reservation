@@ -41,3 +41,8 @@ go get github.com/gofiber/fiber/v2
 ```
 docker run --name mongob -d mongo:latest -p 27017:27017
 ```
+
+running the docker container
+```
+docker run --rm --name my_mongo_container -d mongo:latest
+```

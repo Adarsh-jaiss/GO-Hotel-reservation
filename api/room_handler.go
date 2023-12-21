@@ -24,10 +24,7 @@ type BookRoomParams struct{
 	NumPersons int 	   `json:"numPersons"`
 }
 
-type genericResp struct {
-	Type string `json:"type"`
-	Msg  string `json:"msg"`
-}
+
 
 func NewRoomHandler(store *db.Store) *RoomHandler {
 	return &RoomHandler{
@@ -70,10 +67,7 @@ func (h *RoomHandler) HandleBookRoom(c *fiber.Ctx) error{
 
 	user, ok := c.Context().Value("user").(*types.User)
 	if !ok{
-		return c.Status(http.StatusInternalServerError).JSON(genericResp{
-			Type :"error",
-			Msg :"Internal server error",
-		})
+		return err
 	}
 
 
@@ -83,10 +77,7 @@ func (h *RoomHandler) HandleBookRoom(c *fiber.Ctx) error{
 		return err
 	}
 	if !ok{
-		return c.Status(http.StatusBadRequest).JSON(genericResp{
-			Type: "error",
-			Msg: fmt.Sprintf("room %s already booked ", c.Params("id")),
-		})
+		return NewError(http.StatusBadRequest,"room %s already booked ")
 	}
 
 

@@ -2,8 +2,8 @@ package api
 
 import (
 	"errors"
-	
 
+	
 	"github.com/adarsh-jaiss/GO-Hotel-reservation/db"
 	"github.com/adarsh-jaiss/GO-Hotel-reservation/types"
 	"github.com/gofiber/fiber/v2"
@@ -44,7 +44,7 @@ func (h *Userhandler) HandlerUser(c *fiber.Ctx) error {
 func (h *Userhandler) HandlerUsers(c *fiber.Ctx) error {
 	user,err := h.userstore.GetUsers(c.Context())
 	if err!= nil{
-		return err
+		return ErrResourceNotFound("user")
 	}
 
 	
@@ -54,7 +54,7 @@ func (h *Userhandler) HandlerUsers(c *fiber.Ctx) error {
 func (h *Userhandler) HandlePostUser(c *fiber.Ctx) error {
 	var params types.CreateUserParams
 	if err:= c.BodyParser(&params); err!=nil{
-		return err
+		return ErrBadRequest()
 	}
 
 	if errors := params.ValidateUsers(); len(errors) > 0 {
@@ -91,11 +91,11 @@ func (h *Userhandler) HandlePutUser(c *fiber.Ctx) error {
 
     oid, err := primitive.ObjectIDFromHex(userID)
     if err != nil {
-        return c.Status(fiber.StatusBadRequest).JSON(map[string]string{"error": "invalid user ID"})
+        return ErrInvalidID()
     }
 
     if err := c.BodyParser(&params); err != nil {
-        return err
+        return ErrBadRequest()
     }
 
     // fmt.Printf("Update Params: %+v\n", params)

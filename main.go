@@ -13,6 +13,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	
 )
 
 const (
@@ -93,12 +94,17 @@ func main() {
 	
 }
 
+// central error handling
+// var config = fiber.Config{
+//     ErrorHandler: func(c *fiber.Ctx, err error) error {
+//         return c.JSON(map[string]string{"error":err.Error()})
+//     },
+// }
 
 var config = fiber.Config{
-    ErrorHandler: func(c *fiber.Ctx, err error) error {
-        return c.JSON(map[string]string{"error":err.Error()})
-    },
+    ErrorHandler: api.ErrorHandler,
 }
+
 
 
 
