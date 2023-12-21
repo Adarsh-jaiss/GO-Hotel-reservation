@@ -132,6 +132,6 @@ make test
 
 ## Author's Note
 
-**I haven't implemented few things such as Database migration, adding up another database layer (maybe postgress), Pagination, Test Cases for all the handlers, and some other API functionalities like creating admin directly via post method but in future maybe I'll apply those as well.**
+**I haven't implemented few things such as Database migration, adding up another database layer (maybe postgress), Pagination, Custom Test Cases for all the handlers, and some other API functionalities like creating admin directly via post method but in future maybe I'll apply those as well.**
 
 <h4>If you like this project, do give it a star and I am open for suggestions and feedbacks. You can create an issue if you find bugs or got some better way to implement stuff and we can discuss over it.</h4>
