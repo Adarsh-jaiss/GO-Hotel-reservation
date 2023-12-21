@@ -1,11 +1,15 @@
 package db
 
-const (
-	DBNAME = "Hotel-reservation"
-	TestDBNAME = "Hotel-reservation-test"
-	DBURI = "mongodb://172.17.0.2:27017/"
+const MongoDbEnvName = "MONGO_DB_NAME"
 
-)
+// const (
+// // 	DBNAME = "Hotel-reservation"
+// // 	TestDBNAME = "Hotel-reservation-test"
+// 	DBURI = "mongodb://172.17.0.2:27017/"
+
+// )
+
+
 
 type Store struct{
 	User UserStorer
@@ -13,5 +17,4 @@ type Store struct{
 	Room RoomStore
 	Booking BookingStore
 }
-
 

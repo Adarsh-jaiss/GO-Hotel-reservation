@@ -4,25 +4,37 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/adarsh-jaiss/GO-Hotel-reservation/api"
 	"github.com/adarsh-jaiss/GO-Hotel-reservation/db"
 	seeding "github.com/adarsh-jaiss/GO-Hotel-reservation/db/Seeding"
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func main()  {
+
+	if err := godotenv.Load(); err != nil {
+        log.Fatal(err)
+    }
+	var (
+		err error
+		mongoEndPoint = os.Getenv("MONGO_DB_URL")
+		mongoDbName = os.Getenv(db.MongoDbEnvName)
+	)
+
 	fmt.Println("----------- Seeding the Database ------------")
-	var err error
 	ctx := context.Background()
-    client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(db.DBURI))
+    client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(mongoEndPoint))
     if err != nil {
         log.Fatal(err)
     }
 
-	if err := client.Database(db.DBNAME).Drop(ctx); err!= nil{
+	fmt.Println(mongoDbName)
+	if err := client.Database(mongoDbName).Drop(ctx); err!= nil{
 		log.Fatal(err)
 	}
 
@@ -30,7 +42,7 @@ func main()  {
 		User: db.NewMongoUserStore(client),
 		Booking: db.NewMongoBookingStore(client),
 		Hotel: db.NewMongoHotelStore(client),
-		Room: db.NewMongoRoomStore(client,db.DBNAME,db.NewMongoHotelStore(client)),
+		Room: db.NewMongoRoomStore(client,db.NewMongoHotelStore(client)),
 	}
 
 	user := seeding.AddUser(store,"adarsh","jaiswal",false)
@@ -44,5 +56,11 @@ func main()  {
 	booking := seeding.AddBooking(store,user.ID,room.ID,time.Now(),time.Now().AddDate(0,0,2))
 	fmt.Println("booking ->", booking.ID)	
 	fmt.Println("----------Database seeding completed-------")
+
+	for i := 0; i < 100; i++ {
+		name := fmt.Sprintf("Hotel %d",i)
+		location := fmt.Sprintf("location %d",i)
+		seeding.AddHotel(store,name, location, 4 ,nil)
+	}
 }
 

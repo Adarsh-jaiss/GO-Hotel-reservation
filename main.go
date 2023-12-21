@@ -2,28 +2,50 @@ package main
 
 import (
 	"context"
-
-	"flag"
+	
+	"os"
 
 	"log"
-
+	
 	"github.com/adarsh-jaiss/GO-Hotel-reservation/api"
 	"github.com/adarsh-jaiss/GO-Hotel-reservation/db"
 	"github.com/adarsh-jaiss/GO-Hotel-reservation/middleware"
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	
 )
 
 const (
-	
 	// dbname = "Hotel-reservation"
-
 )
+
+func Init() {
+    if err := godotenv.Load(); err != nil {
+        log.Fatal(err)
+    }
+
+	// for debugging purposes only
+    // for _, envVar := range os.Environ() {
+    //     fmt.Println(envVar)
+    // }
+}
+
+
 func main() {
 	// connecting with Mongo DB
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(db.DBURI))
+	Init()
+	mongoEndPoint:= os.Getenv("MONGO_DB_URL")
+	
+
+	// for debugging purposes only
+	// fmt.Println("MONGO_DB_URL:", mongoEndPoint)  
+	// if mongoEndPoint == "" {
+	// 	log.Fatal("MONGO_DB_URL is not set in the environment")
+	// }
+
+
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(mongoEndPoint))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -33,7 +55,7 @@ func main() {
 	var (
 	
 	hotelStore = db.NewMongoHotelStore(client)
-	roomStore = db.NewMongoRoomStore(client,db.DBNAME,hotelStore)
+	roomStore = db.NewMongoRoomStore(client,hotelStore)
 	userStore = db.NewMongoUserStore(client)
 	bookingStore  = db.NewMongoBookingStore(client)
 	
@@ -88,8 +110,9 @@ func main() {
 	admin.Get("/booking",BookingHandler.HandleGetBookings)
 	
 
-	listerAddr:= flag.String("listenAddr",":3000","This is the listen Address of the API Server")
-	app.Listen(*listerAddr)
+	// listerAddr:= flag.String("listenAddr",":3000","This is the listen Address of the API Server")
+	listenAddr := os.Getenv("HTTP_LISTEN_ADDRESS")
+	app.Listen(listenAddr)
 
 	
 }
@@ -104,6 +127,7 @@ func main() {
 var config = fiber.Config{
     ErrorHandler: api.ErrorHandler,
 }
+
 
 
 

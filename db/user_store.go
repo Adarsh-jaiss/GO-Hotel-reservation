@@ -3,7 +3,7 @@ package db
 import (
 	"context"
 	"fmt"
-
+	"os"
 	"github.com/adarsh-jaiss/GO-Hotel-reservation/types"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -36,9 +36,10 @@ type MongoUserStore struct{
 	
 }
 func NewMongoUserStore(c *mongo.Client) *MongoUserStore {
+	dbname := os.Getenv("MONGO_DB_NAME")
 	return &MongoUserStore{
 		client: c,
-		coll: c.Database(DBNAME).Collection(Usercoll),
+		coll: c.Database(dbname).Collection(Usercoll),
 	}
 	
 }
@@ -110,11 +111,16 @@ func (s *MongoUserStore) DeleteUsers(ctx context.Context, id string) error {
 }
 
 func (s *MongoUserStore) UpdateUsers(ctx context.Context, filter bson.M, params types.UpdateUserParams) error {
-	update := bson.M{"$set":params}
-    _, err := s.coll.UpdateOne(ctx, filter, update)
+	// update := bson.M{"$set":params}
+	update := bson.M{"$set": bson.M{
+        "firstname": params.FirstName,
+        "lastname": params.LastName,
+       
+    }}
+   
+	_, err := s.coll.UpdateOne(ctx, filter, update)
     if err != nil {
         return err
     }
-
     return nil
 }
