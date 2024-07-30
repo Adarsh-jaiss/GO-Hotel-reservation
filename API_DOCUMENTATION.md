@@ -156,11 +156,12 @@ Here's an example :
 - **Request:**
   - Path parameter:
     - `id` (string): Room ID.
-- **Response:**
+
   - Body:
     - `fromdate` 
     - `tilldate`
     - `numPersons`
+- **Response:**
   - Success (201 Created):
     - Room booked successfully.
   

@@ -103,7 +103,7 @@ git clone https://github.com/YourUsername/GO-Hotel-reservation.git
 cd GO-Hotel-reservation
 go mod download
 make seed
-make docker
+make docker or make run
 ```
 If you have exited out of docker container, use this command to create another container out of the docker image
 ```
@@ -111,6 +111,77 @@ docker run -p 3000:3000 --rm --name hotel-reservation 4fde40842494
 
 ```
 
+- Now you can test all of the API's using their routes :
+- 
+
+1. USER ROUTES :
+   
+```bash
+
+http://localhost:3000/api/v1/user -> GET all Users
+
+http://localhost:3000/api/v1/user/:id -> GET
+
+http://localhost:3000/api/v1/user -> POST
+
+req body :
+{
+  "firstName": "rohan",
+  "lastName": "nanda",
+  "email": "rohan@jaiswal.com",
+  "password": "12345678",
+  "isAdmin": true
+}
+
+http://localhost:3000/api/v1/user/:id -> DELETE
+
+
+http://localhost:3000/api/v1/user/:id -> PUT (NOT updating correctly)
+
+```
+
+2. Hotels :
+
+```bash
+http://localhost:3000/api/v1/hotel  -> GET all hotels
+
+http://localhost:3000/api/v1/hotel/66a91ae3401a46473b599859 -> GET hotels by ID
+
+http://localhost:3000/api/v1/hotel/66a91ae3401a46473b599859/rooms -> GET all rooms of a hotel
+
+```
+3. Looking for rooms and booking it
+
+```bash
+http://localhost:3000/api/v1/room -> GET all the available rooms
+
+
+http://localhost:3000/api/v1/room/66a91ae3401a46473b59985a/book -> POST (room booking NOT WORKING maybe because i'm not authenticated)
+
+req body :
+ { 
+  "fromdate":"2024-12-12T00:00:00.0Z",
+  "tilldate":"2024-12-25T00:00:00.0Z",
+  "numPersons":4
+ }
+```
+
+4. CHECKING AND CANCELLING BOOKINGS BY USER
+
+```bash
+http://localhost:3000/api/v1/booking/id -> GET bookings by a user
+
+http://localhost:3000/api/v1/booking/id/cancel -> GET (Cancel booking)
+
+```
+
+5. ADMIN panel
+
+```bash
+http://localhost:3000/api/v1/admin/booking -> GET (all bookings) NOT WORKING 
+
+
+```
 
 
 ## Configuration

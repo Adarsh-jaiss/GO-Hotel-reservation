@@ -68,20 +68,21 @@ func main() {
 	hotelHandler = api.NewHotelHandler(store)
 	roomHandler = api.NewRoomHandler(store)
 	userHandler = api.NewUserhandler(userStore)
-	authHandler = api.NewAuthHandler(userStore)
+	// authHandler = api.NewAuthHandler(userStore)
 	BookingHandler = api.NewBookingHandler(store)
 
 	// Routes Grouping
 	app	= fiber.New(config)
-	auth =app.Group("api")
-	appV1 = app.Group("api/v1",middleware.JWTAuthentication(userStore))
+	// auth =app.Group("api")
+	// appV1 = app.Group("api/v1",middleware.JWTAuthentication(userStore))
+	appV1 = app.Group("api/v1")
 	admin = appV1.Group("/admin",middleware.AdminAuth)
 
 )
 	
 	
 	// Auth Handlers
-	auth.Post("/auth",authHandler.HandleAuthenticate )
+	// auth.Post("/auth",authHandler.HandleAuthenticate )
 	
 	// Versioned API routes
 	// This is user handlers
@@ -101,6 +102,7 @@ func main() {
 	appV1.Post("/room/:id/book",roomHandler.HandleBookRoom )
 
 	// Todo : cancel a booking
+	// TODO : GET ALL BOOKINGS BY A USER
 
 	// booking Handlers
 	appV1.Get("/booking/:id",BookingHandler.HandleGetBooking)

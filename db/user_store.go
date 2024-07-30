@@ -35,6 +35,7 @@ type MongoUserStore struct{
 	coll *mongo.Collection
 	
 }
+
 func NewMongoUserStore(c *mongo.Client) *MongoUserStore {
 	dbname := os.Getenv("MONGO_DB_NAME")
 	return &MongoUserStore{

@@ -45,9 +45,9 @@ func main()  {
 		Room: db.NewMongoRoomStore(client,db.NewMongoHotelStore(client)),
 	}
 
-	user := seeding.AddUser(store,"adarsh","jaiswal",false)
+	user := seeding.AddUser(store,"adarsh","jaiswal",true)
 	fmt.Println("Adarsh ->",api.CreateTokenFromUser(user))
-	admin := seeding.AddUser(store,"aakriti","awasthi",true)
+	admin := seeding.AddUser(store,"aakriti","awasthi",false)
 	fmt.Println("aakrti ->",api.CreateTokenFromUser(admin))
 	hotel := seeding.AddHotel(store,"royal palace","bhopal",4,nil)
 	fmt.Println(hotel)
