@@ -20,7 +20,7 @@ func JWTAuthentication(userstore db.UserStorer) fiber.Handler {
 			return api.ErrUnAuthorised()
 		}
 
-		claims,err := ValidateTokens(token)
+		claims, err := ValidateTokens(token)
 		if err != nil {
 			return err
 		}
@@ -30,23 +30,25 @@ func JWTAuthentication(userstore db.UserStorer) fiber.Handler {
 
 		// check token expiration
 		fmt.Println(expires)
-
 		if time.Now().Unix() > expires {
-			return api.NewError(http.StatusUnauthorized,"token expired")
+			return api.NewError(http.StatusUnauthorized, "token expired")
 		}
 
 		userID := claims["id"].(string)
-		user,err := userstore.GetUserByID(c.Context(), userID)
-		if err!= nil{
+		user, err := userstore.GetUserByID(c.Context(), userID)
+		if err != nil {
 			return api.ErrUnAuthorised()
 		}
 
 		// set the current authenticated user to the context
-		c.Context().SetUserValue("user",user)
-		return c.Next()
-	}	
-}	
+		c.Context().SetUserValue("user", user)
 
+		// Set the token in the header for subsequent requests
+		c.Set("X-Api-Token", token)
+
+		return c.Next()
+	}
+}
 
 // func JWTAuthntication(c *fiber.Ctx) error {
 // 	fmt.Println("---- JWT Authenticating-----")
@@ -66,7 +68,7 @@ func JWTAuthentication(userstore db.UserStorer) fiber.Handler {
 // 	return nil
 // }
 
-func ValidateTokens(tokenStr string) (jwt.MapClaims,error) {
+func ValidateTokens(tokenStr string) (jwt.MapClaims, error) {
 	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			fmt.Printf("Invalid signing method: %v\n", token.Header["alg"])
@@ -83,18 +85,17 @@ func ValidateTokens(tokenStr string) (jwt.MapClaims,error) {
 		return nil, api.ErrUnAuthorised()
 	}
 
-	if !token.Valid{
+	if !token.Valid {
 		fmt.Println("Invalid token: ", err)
-		return nil,api.ErrUnAuthorised()
-	}
-
-
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok{
 		return nil, api.ErrUnAuthorised()
 	}
 
-	return claims,nil
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return nil, api.ErrUnAuthorised()
+	}
+
+	return claims, nil
 }
 
 // func ParseTokens(tokenStr string) error {
@@ -113,7 +114,6 @@ func ValidateTokens(tokenStr string) (jwt.MapClaims,error) {
 // 		fmt.Println("Failed to parse JWT token: ", err)
 // 		return fmt.Errorf("unauthorized")
 // 	}
-
 
 // 	if claims, ok := token.Claims.(jwt.MapClaims); ok {
 // 		fmt.Println(claims)

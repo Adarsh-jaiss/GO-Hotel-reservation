@@ -112,19 +112,13 @@ docker run -p 3000:3000 --rm --name hotel-reservation 4fde40842494
 ```
 
 - Now you can test all of the API's using their routes :
-- 
+  
+0. Authentication
 
-1. USER ROUTES :
-   
 ```bash
 
-http://localhost:3000/api/v1/user -> GET all Users
+http://localhost:3000/api/auth/signup  -> POST (create a new user)
 
-http://localhost:3000/api/v1/user/:id -> GET
-
-http://localhost:3000/api/v1/user -> POST
-
-req body :
 {
   "firstName": "rohan",
   "lastName": "nanda",
@@ -133,14 +127,43 @@ req body :
   "isAdmin": true
 }
 
-http://localhost:3000/api/v1/user/:id -> DELETE
 
+http://localhost:3000/api/auth/signin -> POST (sign in already existing user)
 
-http://localhost:3000/api/v1/user/:id -> PUT (NOT updating correctly)
+req body :
+
+  {
+  "email": "rohan@jaiswal.com",
+  "password": "12345678"
+  }
+
 
 ```
 
-2. Hotels :
+1. USER ROUTES :
+
+Note : ISAdmin can only be modified in seed, we can not create a new user with admin value true, we can only seed admin.
+   
+```bash
+
+http://localhost:3000/api/v1/user -> GET all Users
+
+http://localhost:3000/api/v1/user/:id -> GET
+
+http://localhost:3000/api/v1/user/:id -> DELETE
+
+
+http://localhost:3000/api/v1/user/:id -> PUT (NOT updating correctly) -> can only update first and last name.
+
+body :
+
+{
+  "firstName": "rohan_baba"
+}
+
+```
+
+1. Hotels :
 
 ```bash
 http://localhost:3000/api/v1/hotel  -> GET all hotels

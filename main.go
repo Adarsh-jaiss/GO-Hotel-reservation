@@ -68,29 +68,31 @@ func main() {
 	hotelHandler = api.NewHotelHandler(store)
 	roomHandler = api.NewRoomHandler(store)
 	userHandler = api.NewUserhandler(userStore)
-	// authHandler = api.NewAuthHandler(userStore)
+	authHandler = api.NewAuthHandler(userStore)
 	BookingHandler = api.NewBookingHandler(store)
 
 	// Routes Grouping
 	app	= fiber.New(config)
-	// auth =app.Group("api")
-	// appV1 = app.Group("api/v1",middleware.JWTAuthentication(userStore))
-	appV1 = app.Group("api/v1")
+	auth =app.Group("api")
+	
+	appV1 = app.Group("api/v1",middleware.JWTAuthentication(userStore))
+	// appV1 = app.Group("api/v1")
 	admin = appV1.Group("/admin",middleware.AdminAuth)
 
 )
 	
 	
 	// Auth Handlers
-	// auth.Post("/auth",authHandler.HandleAuthenticate )
+	auth.Post("/auth/signin",authHandler.HandleAuthenticate )
+	auth.Post("/auth/signup",userHandler.HandlePostUser)
 	
 	// Versioned API routes
 	// This is user handlers
 	appV1.Get("/user",userHandler.HandlerUsers)
 	appV1.Get("/user/:id",userHandler.HandlerUser)
-	appV1.Post("/user",userHandler.HandlePostUser)
+
 	appV1.Delete("/user/:id",userHandler.HandleDeleteUser)
-	appV1.Put("/user/:id",userHandler.HandlePutUser)
+	appV1.Patch("/user/:id",userHandler.HandlePutUser)
 
 	// This is hotel handlers
 	appV1.Get("/hotel", hotelHandler.HandleGetHotels )
