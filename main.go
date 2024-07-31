@@ -126,7 +126,8 @@ func main() {
 	if listenAddr == "" {
 		listenAddr = ":8000"
 	}
-	app.Listen(listenAddr)
+
+	log.Fatal(app.Listen("0.0.0.0"+ listenAddr))
 
 }
 
