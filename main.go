@@ -123,6 +123,9 @@ func main() {
 
 	// listerAddr:= flag.String("listenAddr",":3000","This is the listen Address of the API Server")
 	listenAddr := os.Getenv("HTTP_LISTEN_ADDRESS")
+	if listenAddr == "" {
+		listenAddr = ":8000"
+	}
 	app.Listen(listenAddr)
 
 }
