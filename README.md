@@ -163,7 +163,7 @@ body :
 
 ```
 
-1. Hotels :
+2. Hotels :
 
 ```bash
 http://localhost:3000/api/v1/hotel  -> GET all hotels
@@ -179,7 +179,7 @@ http://localhost:3000/api/v1/hotel/66a91ae3401a46473b599859/rooms -> GET all roo
 http://localhost:3000/api/v1/room -> GET all the available rooms
 
 
-http://localhost:3000/api/v1/room/66a91ae3401a46473b59985a/book -> POST (room booking NOT WORKING maybe because i'm not authenticated)
+http://localhost:3000/api/v1/room/66a91ae3401a46473b59985a/book -> POST (book rooms)(working only after authentication)
 
 req body :
  { 
