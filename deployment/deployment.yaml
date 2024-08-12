@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: book-my-hotel-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: book-my-hotel
+  template:
+    metadata:
+      labels:
+        app: book-my-hotel
+    spec:
+      containers:
+      - name: book-my-hotel
+        image: adarshjaiss/book-my-hotel:v.1.0.0
+        ports:
+        - containerPort: 8000
+        envFrom:
+          - secretRef:
+              name: my-env-secrets
+        env:
+        - name: MONGO_DB_URL
+          value: "mongodb://your_mongo_host:your_mongo_port/your_database"
+        - name: MONGO_DB_NAME
+          value: "your_DB_NAME"
+        - name: MONGO_USER
+          value: "your_mongo_user"
+        - name: MONGO_PASSWORD
+          value: "your_mongo_password"
