@@ -84,8 +84,22 @@ The application should now be accessible at `http://localhost:8000`.
 1. build the image : `docker build -t go-api:1 .`
 2. Run for checking image : `docker images`
 3. Read Prerequisites.
-4. Run the docker conatiner from the image : `docker run -d -p 8000:8000 --name go_api_conatiner go-api:1`
+4. Run the docker conatiner from the image if you have cloned the repo : `docker run -d -p 8000:8000 --name go_api_conatiner go-api:1`
 5. Now access it on `localhost:8000`
+
+else use this to diectly run the docker container :
+
+`docker run -d -p 8000:8000 --env-file /path/to/your/.env --name my_container adarshjaiss/book-my-hotel:tagname`
+
+where your `.env` files should have these configs :
+
+```bash
+HTTP_LISTEN_ADDRESS=:8000
+JWT_SECRET=somethingsupersecretTHATKNOWBODYKNOWS
+MONGO_DB_NAME=Hotel-reservation
+MONGO_DB_URL=mongodb://172.17.0.2:27017/
+
+```
 
 
 ## Using GO-Hotel-Reservation with Docker
@@ -104,8 +118,14 @@ Make sure you have the following prerequisites installed on your system:
   ```
 
   and run a docker container via 
-  ```
+  ```bash
+
   docker run --rm --name my_mongo_container -d mongo:latest
+
+  or
+
+  docker run --name mongob -d -p 27017:27017 mongo:latest
+
   ```
 
 ### Clone the Repository and run these commands in your terminal
