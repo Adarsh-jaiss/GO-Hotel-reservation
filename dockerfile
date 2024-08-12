@@ -11,6 +11,8 @@ RUN --mount=type=cache,target=go/pkg/mod \
 --mount=type=cache,target=/root/.cache/go-build \
  go mod download
 
+CMD [ "make", "seed" ]
+
 # Copy the entire source code to the working directory
 COPY . .
 
