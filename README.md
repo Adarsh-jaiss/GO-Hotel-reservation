@@ -35,6 +35,7 @@ Before you begin, make sure you have the following prerequisites installed:
 - [Go](https://golang.org/dl/)
 - [MongoDB](https://www.mongodb.com/try/download/community)
 - [Docker](https://www.docker.com/get-started)
+- [Container-image-link](https://hub.docker.com/r/adarshjaiss/book-my-hotel/tags)
 
 
 ## Getting Started
