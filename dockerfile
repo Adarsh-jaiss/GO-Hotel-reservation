@@ -1,4 +1,4 @@
-FROM golang:1.20.3-alpine
+FROM golang:alpine3.20 AS build
 
 # Set the working directory to /app
 WORKDIR /app
@@ -7,16 +7,32 @@ WORKDIR /app
 COPY go.mod go.sum ./
 
 # Download and install any required Go dependencies
-RUN go mod download
+RUN --mount=type=cache,target=go/pkg/mod \
+--mount=type=cache,target=/root/.cache/go-build \
+ go mod download
 
 # Copy the entire source code to the working directory
 COPY . .
 
 # Build the Go application
-RUN go build -o main .
+RUN go build \
+#  -ldflags="-linkmode external -extldflags -static" \
+ -tags netgo \ 
+ -o main 
+
+# Multistage build
+FROM scratch
+
+# Copy the .env file into the image
+COPY .env .env
+
+
+ENV GOFIBER_MODE=release
+
+COPY --from=build /app/main main
 
 # Expose the port specified by the PORT environment variable
-EXPOSE 3000
+EXPOSE 8000
 
 # Set the entry point of the container to the executable
 CMD ["./main"]

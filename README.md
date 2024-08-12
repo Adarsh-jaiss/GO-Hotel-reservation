@@ -9,6 +9,8 @@ GO-Hotel-Reservation is a Go-based web application for hotel reservations. It is
   - [Features](#features)
   - [Prerequisites](#prerequisites)
   - [Getting Started](#getting-started)
+    - [Running via docker conatiner](#running-via-docker-conatiner)
+    - [Running on localhost](#running-on-localhost)
   - [Using GO-Hotel-Reservation with Docker](#using-go-hotel-reservation-with-docker)
     - [Prerequisites](#prerequisites-1)
     - [Clone the Repository and run these commands in your terminal](#clone-the-repository-and-run-these-commands-in-your-terminal)
@@ -34,7 +36,19 @@ Before you begin, make sure you have the following prerequisites installed:
 - [MongoDB](https://www.mongodb.com/try/download/community)
 - [Docker](https://www.docker.com/get-started)
 
+
+
 ## Getting Started
+
+### Running via docker conatiner
+
+1. build the image : `docker build -t go-api:1 .`
+2. Run for checking image : `docker images`
+3. Run the docker conatiner from the image : `docker run -d -p 8000:8000 --name go_api_conatiner go-api:1`
+4. Now access it on `localhost:8000`
+
+
+### Running on localhost
 
 1. Clone the repository:
 

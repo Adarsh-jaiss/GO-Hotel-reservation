@@ -77,15 +77,37 @@ func main() {
 	)
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:3000", // Adjust this to your front-end origin
+		AllowOrigins: "*",
 		AllowMethods: "GET,POST,PUT,DELETE",
 		AllowHeaders: "Content-Type, X-Api-Token",
+		AllowCredentials: true,
+		AllowOriginsFunc: func(origin string) bool {
+			return origin == "http://localhost:3000"
+
+		},
 	}))
 
-	appV1.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:3000", // Adjust this to your front-end origin
+	auth.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
 		AllowMethods: "GET,POST,PUT,DELETE",
 		AllowHeaders: "Content-Type, X-Api-Token",
+		AllowCredentials: true,
+		AllowOriginsFunc: func(origin string) bool {
+			return origin == "http://localhost:3000"
+
+		},
+
+	}))
+	
+	appV1.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowMethods: "GET,POST,PUT,DELETE",
+		AllowHeaders: "Content-Type, X-Api-Token",
+		AllowCredentials: true,
+		AllowOriginsFunc: func(origin string) bool {
+			return origin == "http://localhost:3000"
+
+		},
 	}))
 
 	// Auth Handlers
