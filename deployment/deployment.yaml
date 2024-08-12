@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: book-my-hotel-deployment
+  namespace: default
 spec:
   replicas: 3
   selector:
@@ -18,6 +19,8 @@ spec:
         ports:
         - containerPort: 8000
         envFrom:
+          - configMapRef:
+              name: my-env-config
           - secretRef:
               name: my-env-secrets
         env:
